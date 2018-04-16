@@ -9,6 +9,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 public class gamescreen extends AppCompatActivity implements View.OnClickListener {
 
     public static Boolean turnX = true;
@@ -20,6 +24,9 @@ public class gamescreen extends AppCompatActivity implements View.OnClickListene
     public static int pointPlayer2 = 0;
     public static int roundCount = 0;
 
+    public static String game_type;
+    public static String game_mode;
+
     private TextView textViewPlayer1;
     private TextView textViewPlayer2;
     private int grid = 3;
@@ -30,8 +37,8 @@ public class gamescreen extends AppCompatActivity implements View.OnClickListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gamescreen);
-        String savedData = getIntent().getStringExtra("game_type");
-
+        gamescreen.game_type = getIntent().getStringExtra("game_type");
+        gamescreen.game_mode = getIntent().getStringExtra("game_mode");
         /*
         * Binding the buttons to the toggle function
         * */
@@ -53,6 +60,8 @@ public class gamescreen extends AppCompatActivity implements View.OnClickListene
         toggle(v);
         if (checkForWin()) celebrate();
         if (gamescreen.roundCount > 8) draw();
+        if (gamescreen.game_mode.equals("solo")) askAI();
+
         nextTurn();
     }
 
@@ -97,6 +106,48 @@ public class gamescreen extends AppCompatActivity implements View.OnClickListene
 
 
         alert.show();
+    }
+
+    public void askAI() {
+        Toast.makeText(this, " AI's turn", Toast.LENGTH_SHORT).show();
+
+        nextTurn();
+        String[][] states = new String[3][3];
+
+        for (int i = 0; i < grid; i++) {
+            for (int j = 0; j < grid; j++) {
+                states[i][j] = buttons[i][j].getText().toString();
+            }
+        }
+
+        List validMoves = new ArrayList<>();
+
+        for (int i = 0; i < grid; i++) {
+            for (int j = 0; j < grid; j++) {
+                if (states[i][j].equals("")) {
+                    List coords = new ArrayList<>();
+                    coords.add(i);
+                    coords.add(j);
+                    validMoves.add(coords);
+                }
+            }
+        }
+
+
+        Random generator;
+
+        generator = new Random();
+        int ordinate = generator.nextInt(validMoves.size());
+        List newCoords;
+        newCoords = (List) validMoves.get(ordinate);
+        int i = (int) newCoords.get(0);
+        int j = (int) newCoords.get(1);
+
+
+        if (gamescreen.turnX) buttons[i][j].setText("X");
+        else if (gamescreen.turnO) buttons[i][j].setText("O");
+
+        gamescreen.roundCount += 1;
     }
 
     public void toggle(View view) {

@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent activity_gamescreen = new Intent(MainActivity.this, gamescreen.class);
+                activity_gamescreen.putExtra("game_mode", "solo");
                 activity_gamescreen.putExtra("game_type", MainActivity.game_type);
                 startActivity(activity_gamescreen);
             }
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
             public void onClick(View view) {
                 Intent activity_gamescreen = new Intent(MainActivity.this, gamescreen.class);
+                activity_gamescreen.putExtra("game_mode", "multiplayer");
                 activity_gamescreen.putExtra("game_type", MainActivity.game_type);
                 startActivity(activity_gamescreen);
             }
