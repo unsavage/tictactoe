@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class gamescreen extends AppCompatActivity implements View.OnClickListener {
+public class gridfive extends AppCompatActivity implements View.OnClickListener {
 
     public static Boolean turnX = true;
     public static Boolean turnO = false;
@@ -29,14 +29,14 @@ public class gamescreen extends AppCompatActivity implements View.OnClickListene
 
     private TextView textViewPlayer1;
     private TextView textViewPlayer2;
-    private int grid = 3;
+    private int grid = 5;
     private Button[][] buttons = new Button[grid][grid];
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_gamescreen);
+        setContentView(R.layout.activity_gridfive);
         gamescreen.game_type = getIntent().getStringExtra("game_type");
         gamescreen.game_mode = getIntent().getStringExtra("game_mode");
         /*
@@ -59,7 +59,7 @@ public class gamescreen extends AppCompatActivity implements View.OnClickListene
     public void onClick(View v) {
         toggle(v);
         if (checkForWin()) celebrate();
-        if (gamescreen.roundCount > 8) draw();
+        if (gamescreen.roundCount > 24) draw();
         if (gamescreen.game_mode.equals("solo")) askAI();
 
         nextTurn();
@@ -111,7 +111,7 @@ public class gamescreen extends AppCompatActivity implements View.OnClickListene
     public void askAI() {
 
         nextTurn();
-        String[][] states = new String[3][3];
+        String[][] states = new String[grid][grid];
 
         for (int i = 0; i < grid; i++) {
             for (int j = 0; j < grid; j++) {
@@ -149,7 +149,7 @@ public class gamescreen extends AppCompatActivity implements View.OnClickListene
         gamescreen.roundCount += 1;
 
         if (checkForWin()) celebrate();
-        if (gamescreen.roundCount > 8) draw();
+        if (gamescreen.roundCount > 24) draw();
     }
 
     public void toggle(View view) {
@@ -218,29 +218,33 @@ public class gamescreen extends AppCompatActivity implements View.OnClickListene
     }
 
     public Boolean checkForWin() {
-        String[][] field = new String[grid][grid];
+        String[][] field = new String[5][5];
 
         /**
          * this goes though all the buttons and saves the in a string array
          */
-        for (int i = 0; i < grid; i++) {
-            for (int j = 0; j < grid; j++) {
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
                 field[i][j] = buttons[i][j].getText().toString();
             }
         }
         /**
          * this string array goes thought all the rows and columns
          */
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 5; i++) {
             if (field[i][0].equals(field[i][1])
                     && field[i][0].equals(field[i][2])
+                    && field[i][0].equals(field[i][3])
+                    && field[i][0].equals(field[i][4])
                     && !field[i][0].equals("")) {
                 return true;
             }
         }
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 5; i++) {
             if (field[0][i].equals(field[1][i])
                     && field[0][i].equals(field[2][i])
+                    && field[0][i].equals(field[3][i])
+                    && field[0][i].equals(field[4][i])
                     && !field[0][i].equals("")) {
                 return true;
             }
@@ -250,17 +254,22 @@ public class gamescreen extends AppCompatActivity implements View.OnClickListene
          */
         if (field[0][0].equals(field[1][1])
                 && field[0][0].equals(field[2][2])
+                && field[0][0].equals(field[3][3])
+                && field[0][0].equals(field[4][4])
                 && !field[0][0].equals("")) {
             return true;
         }
 
-        return field[0][2].equals(field[1][1])
-                && field[0][2].equals(field[2][0])
-                && !field[0][2].equals("");
+        return field[0][4].equals(field[1][3])
+                && field[0][4].equals(field[2][2])
+                && field[0][4].equals(field[3][1])
+                && field[0][4].equals(field[4][0])
+                && !field[0][4].equals("");
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
         super.onSaveInstanceState(outState);
         outState.putInt("roundCount", roundCount);
         outState.putInt(" pointPlayer1", pointPlayer1);
@@ -268,13 +277,11 @@ public class gamescreen extends AppCompatActivity implements View.OnClickListene
         outState.putBoolean("turnO", turnO);
         outState.putBoolean("xFirst", xFirst);
         outState.putInt("pointPlayer2", pointPlayer2);
-
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-
         roundCount = savedInstanceState.getInt("roundCount");
         pointPlayer1 = savedInstanceState.getInt("player1Points");
         pointPlayer2 = savedInstanceState.getInt("pointPlayer2");
@@ -283,11 +290,3 @@ public class gamescreen extends AppCompatActivity implements View.OnClickListene
         xFirst = savedInstanceState.getBoolean("xFirst");
     }
 }
-// public static Boolean turnX = true;
-//public static Boolean turnO = false;
-
-//public static Boolean xFirst = true;
-
-// public static int pointPlayer1 = 0;
-//public static int pointPlayer2 = 0;
-//public static int roundCount = 0;
